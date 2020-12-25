@@ -1,0 +1,20 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const uid = 1 //app['user']['uid'];
+    let enabled = false;
+    axios.post('/user', {
+        firstName: 'Fred',
+        lastName: 'Flintstone'
+    })
+    .then(function (response) {
+        console.log(response);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+    if(enabled){
+        location.href = './enabled.html'
+    }else{
+        location.href = './disabled.html'
+    }
+</script>
