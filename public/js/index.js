@@ -18,7 +18,7 @@ window.onload = ()=>{
     const cards = document.getElementsByName('card');
 
     const login = ()=>{
-        location.href = 'https://discord.com/api/oauth2/authorize?client_id=795876036318593094&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000%2F&response_type=code&scope=guilds%20identify';
+        location.href = 'https://discord.com/api/oauth2/authorize?client_id=795876036318593094&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000%2Findex&response_type=code&scope=identify%20guilds';
     }
 
     if(!token_type && !access_token){
@@ -31,12 +31,12 @@ window.onload = ()=>{
         document.getElementById('auth').innerHTML = '로그아웃&nbsp;';
         document.getElementById('auth').onclick = ()=>{
             sessionStorage.clear();
-            location.href = '/';
+            location.href = '/index';
         }
 
         cards.forEach((element, index)=>{
             element.addEventListener('click', ()=>{
-                location.href = `/${index}`
+                location.href = `/index/${index}`
             });
         });
 
@@ -48,12 +48,10 @@ window.onload = ()=>{
         }).then((res)=>{
             const { id, username, discriminator } = res.data;
 
-            sessionStorage.setItem('user', {
-                userid: id,
-                username: username,
-                usercode: discriminator
-            });
-            console.log(data);
+            sessionStorage.setItem('userid', id);
+            sessionStorage.setItem('username', username);
+            sessionStorage.setItem('usercode', discriminator);
+            console.log(res.data);
         });
     }
 
