@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>UI Admin - Clean and responsive administration panel</title>
+
+        <meta charset="UTF-8">
+        <meta name="description" content="Clean and responsive administration panel">
+        <meta name="keywords" content="Admin,Panel,HTML,CSS,XML,JavaScript">
+        <meta name="author" content="Erik Campobadal">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="/css/uikit.min.css" />
+		<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+		<link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/css/notyf.min.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="/js/uikit.min.js" ></script>
+		<script src="/js/uikit-icons.min.js" ></script>
+    </head>
+    <body>
+        <input hidden type="number" id="bot_id" value="<%= bot_id %>">
+        <input hidden type="number" id="guild_id" value="<%= guild_id %>">
+        <div uk-sticky class="uk-navbar-container tm-navbar-container uk-active">
+            <div class="uk-container uk-container-expand">
+                <nav uk-navbar>
+                    <div class="uk-navbar-left">
+                        <a id="sidebar_toggle" class="uk-navbar-toggle" uk-navbar-toggle-icon ></a>
+                        <a href="/" class="uk-navbar-item uk-logo">
+                            Bot Market
+                        </a>
+                    </div>
+                    <div class="uk-navbar-right uk-light">
+                        <a id="auth" class="uk-link-heading">로그아웃 &nbsp;</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <div id="sidebar" class="tm-sidebar-left uk-background-default">
+            <ul id="guildListElement" class="uk-nav uk-nav-default">
+                <li class="uk-nav-header">
+                    길드 목록
+                </li>
+            </ul>
+        </div>
+        <div class="content-padder content-background">
+            <div class="uk-section-small uk-section-default header">
+                <div class="uk-container uk-container-large">
+                    <h1><span class="ion-speedometer"></span> 대시보드</h1>
+                </div>
+            </div>
+            <div class="uk-section-small">
+                <div class="uk-container uk-container-large">
+                    <div id="form" class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
+                        <h3 class="uk-card-title">마법의 소라고동 봇</h3>
+                        <p>
+                            <button class="uk-button uk-button-primary">30일 체험판 사용</button>
+                            <br /><br />
+                            <button class="uk-button uk-button-danger">구매하기</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+		<!-- Load More Javascript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js" integrity="sha256-rqEXy4JTnKZom8mLVQpvni3QHbynfjPmPxQVsPZgmJY=" crossorigin="anonymous"></script>
+		<script src="/js/notyf.min.js"></script>
+		<!-- Required Overall Script -->
+        <script src="/js/script.js"></script>
+		<!-- Status Updater -->
+		<script src="/js/status.js"></script>
+		<!-- Sample Notifications -->
+        <script src="/js/notification.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="/js/dashboard.js"></script>
+    </body>
+</html>
+
