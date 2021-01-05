@@ -25,18 +25,18 @@ db.once('open', function() {
 
 // 6. Schema 생성. (혹시 스키마에 대한 개념이 없다면, 입력될 데이터의 타입이 정의된 DB 설계도 라고 생각하면 됩니다.)
 var user = new mongoose.Schema({
-    bot_id: 'Number',
-    userid: 'String',
-    usercode: 'String',
-    username: 'String',
-    guild_id: 'String',
-    guild_name: 'String',
-    start_date: 'String',
-    end_date: 'String',
-    trial: 'Boolean',
-    enable: 'Boolean',
-    billing_key: 'String',
-    channels: 'String'
+    bot_id: Number,
+    userid: String,
+    usercode: String,
+    username: String,
+    guild_id: String,
+    guild_name: String,
+    start_date: String,
+    end_date: String,
+    trial: Boolean,
+    enable: Boolean,
+    billing_key: String,
+    channels: String
 });
 
 // 7. 정의된 스키마를 객체처럼 사용할 수 있도록 model() 함수로 컴파일
