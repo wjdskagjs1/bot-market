@@ -2,5 +2,5 @@
 var notyf = new Notyf();
 
 setTimeout(function() {
-	notyf.confirm('Welcome to Bot Market!!');
+	notyf.success('Welcome to Bot Market!!');
 }, 500);
