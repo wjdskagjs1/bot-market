@@ -164,6 +164,29 @@ router.post('/update', (req, res, next) => {
     });
 });
 
+router.post('/cancel', (req, res, next) => {
+    const {
+        bot_id,
+        userid,
+        usercode,
+        guild_id
+    } = req.body.params;
+
+    User.remove({
+        bot_id: bot_id,
+        userid: userid,
+        usercode: usercode,
+        guild_id: guild_id,
+    },(err, data)=>{
+        if(err){
+            console.log(err);
+            res.json({ result: 'fail'});
+        }else{
+            res.json({ result: 'success'});
+        }
+    });
+});
+
 router.post('/buy', (req, res, next) => {
     const {
         bot_id,
@@ -202,12 +225,11 @@ router.post('/buy', (req, res, next) => {
                     if(error){
                         console.log(error);
                         res.json({
-                            result: 'error'
+                            result: 'fail'
                         });
                     }else{
-                        console.log('Saved!');
                         res.json({ 
-                            result: 'saved'
+                            result: 'success'
                         });
                     }
                 });

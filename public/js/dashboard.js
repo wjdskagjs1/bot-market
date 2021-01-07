@@ -110,7 +110,9 @@ window.onload = ()=>{
                     data['channels'].forEach((value)=>{
                         addChannel(value);
                     });
-                    if(!data['enable']){
+                    if(data['enable']){
+                        form.innerHTML += `<button id="cancelBtn" class="uk-button uk-button-danger">구독 취소하기</button>`;
+                    }else{
                         form.innerHTML += `<button id="buyBtn" class="uk-button uk-button-danger">정식판 구독하기</button>`;
                     }
                 }else{
@@ -127,7 +129,28 @@ window.onload = ()=>{
                     form.innerHTML = html;
                 }
 
-                document.getElementById('trialBtn').onclick = ()=>{
+                $('#cancelBtn').on('click', ()=>{
+                    if(confirm('정말로 구독을 취소하시겠습니까?')){
+                        axios.post(`/users/cancel`,{
+                            params: {
+                                bot_id: bot_id,
+                                userid: userid,
+                                usercode: usercode,
+                                guild_id: guild_id,
+                            }
+                        }).then((res)=>{
+                            const { result } = res.data;
+                            if(result === 'success'){
+                                alert('구독이 취소되었습니다.');
+                            }else{
+                                alert('구독 취소에 실패하였습니다.');
+                            }
+                            location.reload();
+                        });
+                    }
+                });
+
+                $('#trialBtn').on('click', ()=>{
                     axios.get(`/users/left/${bot_id}`).then((res)=>{
                         const { left, count } = res.data;
                         if(left){
@@ -151,7 +174,7 @@ window.onload = ()=>{
                             alert(`서버 수 제한`);
                         }
                     });
-                }
+                });
             });
         });
     }
@@ -160,38 +183,38 @@ window.onload = ()=>{
         const bot_name = document.getElementById('bot_name').textContent;
         const bot_price = parseInt(document.getElementById('bot_price').textContent);
 
-        BootPay.request({
-            price: 0, // 0으로 해야 한다.
-            application_id: "5d0b4dacb6d49c3e68bf29cd",
-            name: bot_name, //결제창에서 보여질 이름
-            pg: 'nicepay',
-            method: 'card_rebill', // 빌링키를 받기 위한 결제 수단
-            show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
-            user_info: {
-                username: username,
-                email: '사용자 이메일',
-                addr: '사용자 주소',
-                phone: '010-1234-4567'
-            },
-            order_id: bot_id, //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
-            params: {callback1: '그대로 콜백받을 변수 1', callback2: '그대로 콜백받을 변수 2', customvar1234: '변수명도 마음대로'},
-            extra: {
-                start_at: '', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
-                end_at: '' // 정기결제 만료일 -  기간 없음 - 무제한
-            }
-        }).error(function (data) {
-            //결제 진행시 에러가 발생하면 수행됩니다.
-            console.log(data);
-        }).cancel(function (data) {
-            //결제가 취소되면 수행됩니다.
-            console.log(data);
-        }).done((info) => {
-            // 빌링키를 정상적으로 가져오면 해당 데이터를 불러옵니다.
-            console.log(info);
-
-            axios.get(`/users/left/${bot_id}`).then((res)=>{
-                const { left, count } = res.data;
-                if(left){
+        axios.get(`/users/left/${bot_id}`).then((res)=>{
+            const { left, count } = res.data;
+            if(left){
+                BootPay.request({
+                    price: 0, // 0으로 해야 한다.
+                    application_id: "5d0b4dacb6d49c3e68bf29cd",
+                    name: bot_name, //결제창에서 보여질 이름
+                    pg: 'nicepay',
+                    method: 'card_rebill', // 빌링키를 받기 위한 결제 수단
+                    show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
+                    user_info: {
+                        username: username,
+                        email: '사용자 이메일',
+                        addr: '사용자 주소',
+                        phone: '010-1234-4567'
+                    },
+                    order_id: bot_id, //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
+                    params: {callback1: '그대로 콜백받을 변수 1', callback2: '그대로 콜백받을 변수 2', customvar1234: '변수명도 마음대로'},
+                    extra: {
+                        start_at: '', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
+                        end_at: '' // 정기결제 만료일 -  기간 없음 - 무제한
+                    }
+                }).error(function (data) {
+                    //결제 진행시 에러가 발생하면 수행됩니다.
+                    console.log(data);
+                }).cancel(function (data) {
+                    //결제가 취소되면 수행됩니다.
+                    console.log(data);
+                }).done((info) => {
+                    // 빌링키를 정상적으로 가져오면 해당 데이터를 불러옵니다.
+                    console.log(info);
+        
                     axios.post('/users/buy', {
                         params: {
                             bot_id: bot_id,
@@ -204,14 +227,18 @@ window.onload = ()=>{
                                 info['billing_key'],
                                 bot_name,
                                 bot_id,
-                                bot_price
+                                bot_price,
+                                info['receipt_id'],
                             ]
                         }
-                    })
-                }else{
-                    alert(`서버 수 제한`);
-                }
-            });
+                    }).then((res)=>{
+                        console.log(res.data);
+                        location.reload();
+                    });
+                });
+            }else{
+                alert(`서버 수 제한`);
+            }
         });
     });
 }
