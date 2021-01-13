@@ -1,6 +1,17 @@
 var express = require('express');
 var router = express.Router();
-const { mongouri } = process.env; //require('../config.json');
+const { 
+    mongouri,
+    rest_application_ID,
+    bootpay_private_key
+ } = process.env; //require('../config.json');
+const RestClient = require('@bootpay/server-rest-client').RestClient;
+RestClient.setConfig(
+    rest_application_ID,
+    bootpay_private_key
+);
+
+
 const botList = require('../botList.json');
 
 /* GET users listing. */
@@ -13,6 +24,15 @@ Date.prototype.addDays = function(days) {
     date.setDate(date.getDate() + days);
     return date;
 }
+Date.prototype.yyyymmdd = function() {
+    var mm = this.getMonth() + 1;
+    var dd = this.getDate();
+  
+    return [this.getFullYear(),
+            (mm>9 ? '' : '0') + mm,
+            (dd>9 ? '' : '0') + dd
+           ].join('');
+};
 
 // 1. mongoose 모듈 가져오기
 var mongoose = require('mongoose');
@@ -53,6 +73,16 @@ const newSetting = {
 
 // 7. 정의된 스키마를 객체처럼 사용할 수 있도록 model() 함수로 컴파일
 const User = mongoose.model('user', user);
+
+const receipt = mongoose.Schema({
+    order_id: String,
+    bot_id: String,
+    userid: String,
+    guild_id: String,
+    date: Date
+});
+
+const Receipt = mongoose.model('receipt', receipt);
 
 router.get('/test/:bot_id', (req, res, next) => {
     const { bot_id } = req.params;
@@ -253,59 +283,91 @@ router.post('/buy', (req, res, next) => {
     }
     const start_date = new Date();
     const end_date = start_date.addDays(30);
-    User.findOne({guild_id: guild_id}, (err, data)=>{
-        if(err){
-            console.log(err);
-        }else{
-            if(data === null){
-                // 8. Student 객체를 new 로 생성해서 값을 입력
-                const newUser = new User({
-                    bot_id: bot_id,
-                    userid: userid,
-                    usercode: usercode,
-                    username: username,
-                    guild_id: guild_id,
-                    guild_name: guild_name,
-                    start_date: start_date,
-                    end_date: end_date,
-                    trial: false,
-                    enable: true,
-                    billing_info: billing_info,
-                    setting: newSetting
-                });
-                // 9. 데이터 저장
-                newUser.save(function(error, data){
-                    if(error){
-                        console.log(error);
-                        res.json({
-                            result: 'fail'
-                        });
-                    }else{
-                        res.json({ 
-                            result: 'success'
-                        });
-                    }
-                });
-            }else{
-                User.updateOne({
-                    bot_id: bot_id,
-                    userid: userid,
-                    usercode: usercode,
-                    guild_id: guild_id,
-                }, { $set: { 
-                    enable: true,
-                    billing_info: billing_info
-                } },(err, data)=>{
+
+    RestClient.getAccessToken().then(function (response) {
+        if (response.status === 200) {
+            const { token } = response.data;
+            const order_id = `${bot_id}-${userid}-${now.yyyymmdd()}`;
+
+            if(now > end_date){
+                Receipt.findOne({order_id: order_id}, (err, data)=>{
                     if(err){
                         console.log(err);
-                        res.json({ result: 'fail'});
                     }else{
-                        res.json({ result: 'success'});
+                        if(data === null){
+                            RestClient.requestSubscribeBillingPayment({
+                                billingKey: billing_info[0], // 빌링키
+                                itemName: billing_info[1], // 정기결제 아이템명
+                                price: parseInt(billing_info[3]), // 결제 금액
+                                orderId: order_id, // 유니크한 주문번호
+                            }).then(function (res) {
+                                if (res.status === 200) {
+                                    User.findOne({guild_id: guild_id}, (err, data)=>{
+                                        if(err){
+                                            console.log(err);
+                                        }else{
+                                            if(data === null){
+                                                // 8. Student 객체를 new 로 생성해서 값을 입력
+                                                const newUser = new User({
+                                                    bot_id: bot_id,
+                                                    userid: userid,
+                                                    usercode: usercode,
+                                                    username: username,
+                                                    guild_id: guild_id,
+                                                    guild_name: guild_name,
+                                                    start_date: start_date,
+                                                    end_date: end_date,
+                                                    trial: false,
+                                                    enable: true,
+                                                    billing_info: billing_info,
+                                                    setting: newSetting
+                                                });
+                                                // 9. 데이터 저장
+                                                newUser.save(function(error, data){
+                                                    if(error){
+                                                        console.log(error);
+                                                        res.json({
+                                                            result: 'fail'
+                                                        });
+                                                    }else{
+                                                        res.json({ 
+                                                            result: 'success'
+                                                        });
+                                                    }
+                                                });
+                                            }else{
+                                                User.updateOne({
+                                                    bot_id: bot_id,
+                                                    userid: userid,
+                                                    usercode: usercode,
+                                                    guild_id: guild_id,
+                                                }, { $set: { 
+                                                    enable: true,
+                                                    billing_info: billing_info
+                                                } },(err, data)=>{
+                                                    if(err){
+                                                        console.log(err);
+                                                        res.json({ result: 'fail'});
+                                                    }else{
+                                                        res.json({ result: 'success'});
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }else{
+                                }
+                            }).catch((reason)=>{
+                                res.json({ result: 'fail'});
+                            });
+                        }
                     }
                 });
             }
         }
-    });
+    }).catch(console.error);
+
+    
 });
 
 function addMonths(date, months) {

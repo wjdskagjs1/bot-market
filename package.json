@@ -7,6 +7,7 @@
     "test": "nodemon ./bin/www"
   },
   "dependencies": {
+    "@bootpay/server-rest-client": "^1.0.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
