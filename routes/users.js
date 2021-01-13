@@ -3,11 +3,6 @@ var router = express.Router();
 const { mongouri } = process.env; //require('../config.json');
 const botList = require('../botList.json');
 
-Date.prototype.next = function() {
-    const mm = this.getMonth() + 1;
-    return new Date(this.getFullYear(), mm+1, 1);
-};
-
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -250,8 +245,6 @@ router.post('/buy', (req, res, next) => {
     if(billing_info[3] !== botList[parseInt(bot_id)]['bot_price']){
         return;
     }
-    const start_date = new Date();
-    const end_date = start_date.next();
 
     User.findOne({guild_id: guild_id}, (err, data)=>{
         if(err){
@@ -266,8 +259,6 @@ router.post('/buy', (req, res, next) => {
                     username: username,
                     guild_id: guild_id,
                     guild_name: guild_name,
-                    start_date: start_date,
-                    end_date: end_date,
                     trial: false,
                     enable: true,
                     billing_info: billing_info,
@@ -293,8 +284,6 @@ router.post('/buy', (req, res, next) => {
                     usercode: usercode,
                     guild_id: guild_id,
                 }, { $set: { 
-                    start_date: start_date,
-                    end_date: end_date,
                     enable: true,
                     billing_info: billing_info
                 } },(err, data)=>{
