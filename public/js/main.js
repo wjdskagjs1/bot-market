@@ -18,7 +18,7 @@ window.onload = ()=>{
     const cards = document.getElementsByName('card');
 
     const login = ()=>{
-        location.href = 'https://discord.com/api/oauth2/authorize?client_id=795876036318593094&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000%2Fmain&response_type=code&scope=identify%20guilds';
+        location.href = 'https://discord.com/api/oauth2/authorize?client_id=795876036318593094&redirect_uri=https%3A%2F%2Ffact-bot-market.herokuapp.com%2Fmain&response_type=code&scope=identify%20guilds';
     }
 
     if(!token_type && !access_token){

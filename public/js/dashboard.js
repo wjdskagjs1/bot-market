@@ -34,7 +34,8 @@ window.onload = ()=>{
             location.href = '/main';
         }
 
-        $("#addChannel").click(function () {
+        // add row
+        $(document).on('click', '#addChannel', function () {
             addChannel('');
         });
     
@@ -42,8 +43,8 @@ window.onload = ()=>{
         $(document).on('click', '#removeChannel', function () {
             $(this).closest('#inputFormRow').remove();
         });
-
-        $("#save").click(function () {
+        
+        $(document).on('click', '#save', function () {
             let channels = []
             const channelsElement = document.getElementsByName('channels');
             for(let i = 0; i < channelsElement.length; i++){
@@ -56,7 +57,9 @@ window.onload = ()=>{
                     userid: userid,
                     usercode: usercode,
                     guild_id: guild_id,
-                    channels: channels
+                    setting:{
+                        channels: channels
+                    }
                 }
             }).then((res)=>{
                 const { data } = res;
@@ -107,7 +110,7 @@ window.onload = ()=>{
                 if(data['trial'] || data['enable']){
                     //form.innerHTML = ``;
                     document.getElementById('guild_name').textContent = guild_name;
-                    data['channels'].forEach((value)=>{
+                    data['setting']['channels'].forEach((value)=>{
                         addChannel(value);
                     });
                     if(data['enable']){

@@ -2,6 +2,12 @@
     {
         "bot_id": 0,
         "bot_name": "마법의 소라고동 봇",
-        "bot_price": 1000
+        "bot_price": 1000,
+        "setting":{
+            "channel": "Array"
+        },
+        "newSetting":{
+            "channel": []
+        }
     }
 ]

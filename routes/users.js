@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const { mongouri } = require('../config.json');
+const { mongouri } = process.env; //require('../config.json');
 const botList = require('../botList.json');
 
 /* GET users listing. */
@@ -25,7 +25,7 @@ db.once('open', function() {
 });
 
 // 6. Schema 생성. (혹시 스키마에 대한 개념이 없다면, 입력될 데이터의 타입이 정의된 DB 설계도 라고 생각하면 됩니다.)
-var user = mongoose.Schema({
+const user = new mongoose.Schema({
     bot_id: String,
     userid: String,
     usercode: String,
@@ -37,15 +37,59 @@ var user = mongoose.Schema({
     trial: Boolean,
     enable: Boolean,
     billing_info: Array,
-    channels: Array
+    setting: {
+        channels: Array
+    }
 });
+const newSetting = {
+    channels: []
+}
 
 // 7. 정의된 스키마를 객체처럼 사용할 수 있도록 model() 함수로 컴파일
-var User = mongoose.model('user', user);
+const User = mongoose.model('user', user);
+
+router.get('/test/:bot_id', (req, res, next) => {
+    const { bot_id } = req.params;
+
+    const newUser = new User({
+        bot_id: bot_id,
+        userid: 'userid',
+        usercode: 'usercode',
+        username: 'username',
+        guild_id: 'guild_id',
+        guild_name: 'guild_name',
+        trial: false,
+        enable: true,
+        billing_info: [],
+        setting: newSetting
+    });
+    // 9. 데이터 저장
+    newUser.save(function(error, data){
+        if(error){
+            console.log(error);
+            res.json({
+                result: 'fail'
+            });
+        }else{
+            User.find({bot_id: bot_id}, (err, data)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    if(data === null){
+                        res.json({});
+                    }else{
+                        res.json(data);
+                    }
+                }
+              });
+        }
+    });
+    
+  });
 
 router.get('/findOne/:guild_id', (req, res, next) => {
   const { guild_id } = req.params;
-  console.log(guild_id);
+
   User.findOne({guild_id: guild_id}, (err, data)=>{
     if(err){
         console.log(err);
@@ -109,7 +153,7 @@ router.post('/trial/enroll', (req, res, next) => {
                     trial: true,
                     enable: false,
                     billing_info: [],
-                    channels: []
+                    setting: newSetting
                 });
                 // 9. 데이터 저장
                 newTrial.save(function(error, data){
@@ -146,7 +190,7 @@ router.post('/update', (req, res, next) => {
         userid,
         usercode,
         guild_id,
-        channels
+        setting
     } = req.body.params;
 
     User.updateOne({
@@ -154,7 +198,7 @@ router.post('/update', (req, res, next) => {
         userid: userid,
         usercode: usercode,
         guild_id: guild_id,
-    }, { $set: { channels: channels } },(err, data)=>{
+    }, { $set: { setting: setting } },(err, data)=>{
         if(err){
             console.log(err);
             res.json({ result: 'fail'});
@@ -218,7 +262,7 @@ router.post('/buy', (req, res, next) => {
                     trial: false,
                     enable: true,
                     billing_info: billing_info,
-                    channels: []
+                    setting: newSetting
                 });
                 // 9. 데이터 저장
                 newUser.save(function(error, data){
