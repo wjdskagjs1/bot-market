@@ -8,6 +8,12 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
 // 1. mongoose 모듈 가져오기
 var mongoose = require('mongoose');
 const { compile } = require('morgan');
@@ -133,7 +139,7 @@ router.post('/trial/enroll', (req, res, next) => {
         guild_name,
     } = req.body.params;
     const start_date = new Date();
-    const end_date = addMonths(new Date(), 1);
+    const end_date = start_date.addDays(30);
 
     User.findOne({guild_id: guild_id}, (err, data)=>{
         if(err){
@@ -245,7 +251,8 @@ router.post('/buy', (req, res, next) => {
     if(billing_info[3] !== botList[parseInt(bot_id)]['bot_price']){
         return;
     }
-
+    const start_date = new Date();
+    const end_date = start_date.addDays(30);
     User.findOne({guild_id: guild_id}, (err, data)=>{
         if(err){
             console.log(err);
@@ -259,6 +266,8 @@ router.post('/buy', (req, res, next) => {
                     username: username,
                     guild_id: guild_id,
                     guild_name: guild_name,
+                    start_date: start_date,
+                    end_date: end_date,
                     trial: false,
                     enable: true,
                     billing_info: billing_info,

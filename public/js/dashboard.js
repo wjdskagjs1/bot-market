@@ -124,7 +124,7 @@ window.onload = ()=>{
 
                     html += `<p>`;
                     if(data['trial'] === undefined){
-                        html += `<button id="trialBtn" class="uk-button uk-button-primary">한달 체험판 사용</button>`;
+                        html += `<button id="trialBtn" class="uk-button uk-button-primary">30일 체험판 사용</button>`;
                         html += `<br /><br />`;
                     }
                     html += `<button id="buyBtn" class="uk-button uk-button-danger">정식판 구독하기</button>`;
