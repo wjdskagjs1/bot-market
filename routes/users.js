@@ -252,12 +252,12 @@ router.post('/cancel', (req, res, next) => {
         guild_id
     } = req.body.params;
 
-    User.remove({
+    User.updateOne({
         bot_id: bot_id,
         userid: userid,
         usercode: usercode,
         guild_id: guild_id,
-    },(err, data)=>{
+    },{$set: {enable: false} }, (err, data)=>{
         if(err){
             console.log(err);
             res.json({ result: 'fail'});

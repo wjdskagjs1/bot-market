@@ -104,10 +104,11 @@ window.onload = ()=>{
             axios.get(`/users/findOne/${guild_id}`).then((res)=>{
                 const { data } = res;
                 const form = document.getElementById('form');
+                const now = new Date();
 
                 console.log(data);
                 
-                if(data['trial'] || data['enable']){
+                if(data['end_date'] >= now){
                     //form.innerHTML = ``;
                     document.getElementById('guild_name').textContent = guild_name;
                     data['setting']['channels'].forEach((value)=>{
@@ -115,7 +116,7 @@ window.onload = ()=>{
                     });
                     if(data['enable']){
                         form.innerHTML += `<button id="cancelBtn" class="uk-button uk-button-danger">구독 취소하기</button>`;
-                    }else{
+                    }else if(data['trial']){
                         form.innerHTML += `<button id="buyBtn" class="uk-button uk-button-danger">정식판 구독하기</button>`;
                     }
                 }else{
