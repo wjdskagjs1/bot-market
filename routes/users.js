@@ -353,6 +353,18 @@ router.post('/buy', (req, res, next) => {
                                                 }
                                             });
                                         }
+                                        const newReceipt = new Receipt({
+                                            order_id: order_id,
+                                            bot_id: bot_id,
+                                            userid: userid,
+                                            guild_id: guild_id,
+                                            date: start_date
+                                        });
+                                        newReceipt.save(function(error, data){
+                                            if(error){
+                                                console.log(error);
+                                            }
+                                        });
                                     }
                                 });
                             }
