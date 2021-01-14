@@ -289,11 +289,11 @@ router.post('/buy', (req, res, next) => {
             const { token } = response.data;
             const order_id = `${bot_id}-${userid}-${start_date.yyyymmdd()}`;
 
-            Receipt.findOne({order_id: order_id}, (err, data)=>{
+            Receipt.findOne({order_id: order_id}, (err, data2)=>{
                 if(err){
                     console.log(err);
                 }else{
-                    if(data === null){
+                    if(data2 === null){
                         RestClient.requestSubscribeBillingPayment({
                             billingKey: billing_info[0], // 빌링키
                             itemName: billing_info[1], // 정기결제 아이템명
@@ -301,11 +301,11 @@ router.post('/buy', (req, res, next) => {
                             orderId: order_id, // 유니크한 주문번호
                         }).then(function (response) {
                             if (response.status === 200) {
-                                User.findOne({guild_id: guild_id}, (err, data)=>{
+                                User.findOne({bot_id: bot_id, userid: userid, guild_id: guild_id}, (err, data3)=>{
                                     if(err){
                                         console.log(err);
                                     }else{
-                                        if(data === null){
+                                        if(data3 === null){
                                             // 8. Student 객체를 new 로 생성해서 값을 입력
                                             const newUser = new User({
                                                 bot_id: bot_id,
@@ -322,7 +322,7 @@ router.post('/buy', (req, res, next) => {
                                                 setting: newSetting
                                             });
                                             // 9. 데이터 저장
-                                            newUser.save(function(error, data){
+                                            newUser.save(function(error, data4){
                                                 if(error){
                                                     console.log(error);
                                                     res.json({
@@ -338,12 +338,11 @@ router.post('/buy', (req, res, next) => {
                                             User.updateOne({
                                                 bot_id: bot_id,
                                                 userid: userid,
-                                                usercode: usercode,
                                                 guild_id: guild_id,
                                             }, { $set: { 
                                                 enable: true,
                                                 billing_info: billing_info
-                                            } },(err, data)=>{
+                                            } },(err, data5)=>{
                                                 if(err){
                                                     console.log(err);
                                                     res.json({ result: 'fail'});
@@ -354,7 +353,6 @@ router.post('/buy', (req, res, next) => {
                                         }
                                     }
                                 });
-                            }else{
                             }
                         }).catch((reason)=>{
                             res.json({ result: 'fail'});
