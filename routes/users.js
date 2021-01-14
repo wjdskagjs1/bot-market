@@ -287,7 +287,7 @@ router.post('/buy', (req, res, next) => {
     RestClient.getAccessToken().then(function (response) {
         if (response.status === 200) {
             const { token } = response.data;
-            const order_id = `${bot_id}-${userid}-${now.yyyymmdd()}`;
+            const order_id = `${bot_id}-${userid}-${start_date.yyyymmdd()}`;
 
             Receipt.findOne({order_id: order_id}, (err, data)=>{
                 if(err){
