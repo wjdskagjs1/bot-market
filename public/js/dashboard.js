@@ -185,7 +185,7 @@ window.onload = ()=>{
                 }
 
                 $('#cancelBtn').on('click', ()=>{
-                    if(confirm('정말로 구독을 취소하시겠습니까?')){
+                    if(confirm('구독을 취소하면 내일까지 재구독이 불가능합니다.\n정말로 구독을 취소하시겠습니까?')){
                         axios.post(`/users/cancel`,{
                             params: {
                                 bot_id: bot_id,
