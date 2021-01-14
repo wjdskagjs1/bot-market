@@ -18,7 +18,7 @@ router.get('/', async (req, res, next) => {
     params.append('code', accessCode);
     params.append('grant_type', 'authorization_code');
     params.append('scope', ['identify', 'guilds']);
-    params.append('redirect_uri', 'http://bot-market.kro.kr/main'); //redirect uri must be matched
+    params.append('redirect_uri', 'http://127.0.0.1:3000/main'); //redirect uri must be matched
   
     await fetch('https://discordapp.com/api/oauth2/token', {
           method: 'POST',

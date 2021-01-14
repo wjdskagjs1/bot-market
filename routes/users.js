@@ -123,10 +123,10 @@ router.get('/test/:bot_id', (req, res, next) => {
     
   });
 
-router.get('/findOne/:guild_id', (req, res, next) => {
-  const { guild_id } = req.params;
+router.get('/findOne/:bot_id/:guild_id', (req, res, next) => {
+  const { bot_id, guild_id } = req.params;
 
-  User.findOne({guild_id: guild_id}, (err, data)=>{
+  User.findOne({bot_id: bot_id, guild_id: guild_id}, (err, data)=>{
     if(err){
         console.log(err);
     }else{
@@ -146,7 +146,7 @@ router.get('/left/:bot_id', (req, res, next)=>{
 
     const MAX = 100;
 
-    User.count({bot_id: bot_id, $or:[{trial: true}, {enable: true}]}, (err, count)=>{
+    User.countDocuments({bot_id: bot_id, $or:[{trial: true}, {enable: true}]}, (err, count)=>{
         if(err){
             console.log(err);
         }else{
@@ -340,6 +340,8 @@ router.post('/buy', (req, res, next) => {
                                                 userid: userid,
                                                 guild_id: guild_id,
                                             }, { $set: { 
+                                                start_date: start_date,
+                                                end_date: end_date,
                                                 enable: true,
                                                 billing_info: billing_info
                                             } },(err, data5)=>{
