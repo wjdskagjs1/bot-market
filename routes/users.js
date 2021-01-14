@@ -289,81 +289,79 @@ router.post('/buy', (req, res, next) => {
             const { token } = response.data;
             const order_id = `${bot_id}-${userid}-${now.yyyymmdd()}`;
 
-            if(now > end_date){
-                Receipt.findOne({order_id: order_id}, (err, data)=>{
-                    if(err){
-                        console.log(err);
-                    }else{
-                        if(data === null){
-                            RestClient.requestSubscribeBillingPayment({
-                                billingKey: billing_info[0], // 빌링키
-                                itemName: billing_info[1], // 정기결제 아이템명
-                                price: parseInt(billing_info[3]), // 결제 금액
-                                orderId: order_id, // 유니크한 주문번호
-                            }).then(function (res) {
-                                if (res.status === 200) {
-                                    User.findOne({guild_id: guild_id}, (err, data)=>{
-                                        if(err){
-                                            console.log(err);
+            Receipt.findOne({order_id: order_id}, (err, data)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    if(data === null){
+                        RestClient.requestSubscribeBillingPayment({
+                            billingKey: billing_info[0], // 빌링키
+                            itemName: billing_info[1], // 정기결제 아이템명
+                            price: parseInt(billing_info[3]), // 결제 금액
+                            orderId: order_id, // 유니크한 주문번호
+                        }).then(function (res) {
+                            if (res.status === 200) {
+                                User.findOne({guild_id: guild_id}, (err, data)=>{
+                                    if(err){
+                                        console.log(err);
+                                    }else{
+                                        if(data === null){
+                                            // 8. Student 객체를 new 로 생성해서 값을 입력
+                                            const newUser = new User({
+                                                bot_id: bot_id,
+                                                userid: userid,
+                                                usercode: usercode,
+                                                username: username,
+                                                guild_id: guild_id,
+                                                guild_name: guild_name,
+                                                start_date: start_date,
+                                                end_date: end_date,
+                                                trial: false,
+                                                enable: true,
+                                                billing_info: billing_info,
+                                                setting: newSetting
+                                            });
+                                            // 9. 데이터 저장
+                                            newUser.save(function(error, data){
+                                                if(error){
+                                                    console.log(error);
+                                                    res.json({
+                                                        result: 'fail'
+                                                    });
+                                                }else{
+                                                    res.json({ 
+                                                        result: 'success'
+                                                    });
+                                                }
+                                            });
                                         }else{
-                                            if(data === null){
-                                                // 8. Student 객체를 new 로 생성해서 값을 입력
-                                                const newUser = new User({
-                                                    bot_id: bot_id,
-                                                    userid: userid,
-                                                    usercode: usercode,
-                                                    username: username,
-                                                    guild_id: guild_id,
-                                                    guild_name: guild_name,
-                                                    start_date: start_date,
-                                                    end_date: end_date,
-                                                    trial: false,
-                                                    enable: true,
-                                                    billing_info: billing_info,
-                                                    setting: newSetting
-                                                });
-                                                // 9. 데이터 저장
-                                                newUser.save(function(error, data){
-                                                    if(error){
-                                                        console.log(error);
-                                                        res.json({
-                                                            result: 'fail'
-                                                        });
-                                                    }else{
-                                                        res.json({ 
-                                                            result: 'success'
-                                                        });
-                                                    }
-                                                });
-                                            }else{
-                                                User.updateOne({
-                                                    bot_id: bot_id,
-                                                    userid: userid,
-                                                    usercode: usercode,
-                                                    guild_id: guild_id,
-                                                }, { $set: { 
-                                                    enable: true,
-                                                    billing_info: billing_info
-                                                } },(err, data)=>{
-                                                    if(err){
-                                                        console.log(err);
-                                                        res.json({ result: 'fail'});
-                                                    }else{
-                                                        res.json({ result: 'success'});
-                                                    }
-                                                });
-                                            }
+                                            User.updateOne({
+                                                bot_id: bot_id,
+                                                userid: userid,
+                                                usercode: usercode,
+                                                guild_id: guild_id,
+                                            }, { $set: { 
+                                                enable: true,
+                                                billing_info: billing_info
+                                            } },(err, data)=>{
+                                                if(err){
+                                                    console.log(err);
+                                                    res.json({ result: 'fail'});
+                                                }else{
+                                                    res.json({ result: 'success'});
+                                                }
+                                            });
                                         }
-                                    });
-                                }else{
-                                }
-                            }).catch((reason)=>{
-                                res.json({ result: 'fail'});
-                            });
-                        }
+                                    }
+                                });
+                            }else{
+                            }
+                        }).catch((reason)=>{
+                            res.json({ result: 'fail'});
+                        });
                     }
-                });
-            }
+                }
+            });
         }
     }).catch(console.error);
 
