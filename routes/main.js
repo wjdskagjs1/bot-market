@@ -18,7 +18,7 @@ router.get('/', async (req, res, next) => {
     params.append('code', accessCode);
     params.append('grant_type', 'authorization_code');
     params.append('scope', ['identify', 'guilds']);
-    params.append('redirect_uri', 'https://fact-bot-market.herokuapp.com/main'); //redirect uri must be matched
+    params.append('redirect_uri', 'http://fact-bot-market.herokuapp.com/main'); //redirect uri must be matched
   
     await fetch('https://discordapp.com/api/oauth2/token', {
           method: 'POST',

@@ -299,8 +299,8 @@ router.post('/buy', (req, res, next) => {
                             itemName: billing_info[1], // 정기결제 아이템명
                             price: parseInt(billing_info[3]), // 결제 금액
                             orderId: order_id, // 유니크한 주문번호
-                        }).then(function (res) {
-                            if (res.status === 200) {
+                        }).then(function (response) {
+                            if (response.status === 200) {
                                 User.findOne({guild_id: guild_id}, (err, data)=>{
                                     if(err){
                                         console.log(err);
