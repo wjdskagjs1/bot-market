@@ -160,7 +160,7 @@ window.onload = ()=>{
 
                 console.log(data);
                 
-                if(dates.compare(data['end_date'], now) === 1){
+                if(data['end_date'] !== undefined && dates.compare(data['end_date'], now) === 1){
                     document.getElementById('guild_name').textContent = guild_name;
                     data['setting']['channels'].forEach((value)=>{
                         addChannel(value);
