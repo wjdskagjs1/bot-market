@@ -61,7 +61,7 @@ router.get('/:bot_id/:guild_id', function(req, res, next) {
     guild_id
   } = req.params;
   console.log(req.params);
-  res.render('dashboard', {
+  res.render(`bot${bot_id}`, {
     bot_id: bot_id,
     invite_uri: botList[parseInt(bot_id)]['invite_uri'],
     bot_name: botList[parseInt(bot_id)]['bot_name'],
