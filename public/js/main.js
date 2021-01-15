@@ -18,7 +18,8 @@ window.onload = ()=>{
     const cards = document.getElementsByName('card');
 
     const login = ()=>{
-        location.href = 'https://discord.com/api/oauth2/authorize?client_id=795876036318593094&redirect_uri=http%3A%2F%2Fbot-market.kro.kr%2Fmain&response_type=code&scope=identify%20guilds';
+        const auth_uri = document.getElementById('auth_uri').value;
+        location.href = auth_uri;
     }
 
     if(!token_type && !access_token){

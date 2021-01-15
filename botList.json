@@ -3,6 +3,19 @@
         "bot_id": 0,
         "bot_name": "마법의 소라고동 봇",
         "bot_price": 1000,
+        "invite_uri": "https://discord.com/api/oauth2/authorize?client_id=796198778590986290&permissions=10242&scope=bot",
+        "setting":{
+            "channel": "Array"
+        },
+        "newSetting":{
+            "channel": []
+        }
+    },
+    {
+        "bot_id": 1,
+        "bot_name": "격려 봇",
+        "bot_price": 1000,
+        "invite_uri": "https://discord.com/api/oauth2/authorize?client_id=795687936527433758&permissions=10242&scope=bot",
         "setting":{
             "channel": "Array"
         },

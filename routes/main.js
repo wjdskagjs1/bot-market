@@ -6,7 +6,9 @@ const botList = require('../botList.json');
 const {
   client_id,
   client_secret,
-} = process.env; //require('../config.json');
+  auth_uri,
+  redirect_uri
+} = process.env; // require('../config.json'); // 
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -18,7 +20,7 @@ router.get('/', async (req, res, next) => {
     params.append('code', accessCode);
     params.append('grant_type', 'authorization_code');
     params.append('scope', ['identify', 'guilds']);
-    params.append('redirect_uri', 'http://bot-market.kro.kr/main'); //redirect uri must be matched
+    params.append('redirect_uri', redirect_uri); //redirect uri must be matched
   
     await fetch('https://discordapp.com/api/oauth2/token', {
           method: 'POST',
@@ -28,7 +30,7 @@ router.get('/', async (req, res, next) => {
           response.json().then(async (auth_token)=>{
               const { token_type, access_token } = auth_token;
               console.log(auth_token);
-              res.render('main', { token_type: token_type, access_token: access_token });
+              res.render('main', { auth_uri: auth_uri, token_type: token_type, access_token: access_token });
           })
       })
       .catch(error => {
@@ -36,15 +38,17 @@ router.get('/', async (req, res, next) => {
           res.render('error');
       });
   }else{
-    res.render('main', { token_type: '', access_token: '' });
+    res.render('main', { auth_uri: auth_uri, token_type: '', access_token: '' });
   }
 });
 
 router.get('/:bot_id', function(req, res, next) {
   const bot_id = req.params.bot_id;
   console.log(req.params);
-  res.render('dashboard', {
+
+  res.render(`bot${bot_id}`, {
     bot_id: bot_id,
+    invite_uri: botList[parseInt(bot_id)]['invite_uri'],
     bot_name: botList[parseInt(bot_id)]['bot_name'],
     bot_price: botList[parseInt(bot_id)]['bot_price'],
     guild_id: ''
@@ -59,6 +63,7 @@ router.get('/:bot_id/:guild_id', function(req, res, next) {
   console.log(req.params);
   res.render('dashboard', {
     bot_id: bot_id,
+    invite_uri: botList[parseInt(bot_id)]['invite_uri'],
     bot_name: botList[parseInt(bot_id)]['bot_name'],
     bot_price: botList[parseInt(bot_id)]['bot_price'],
     guild_id: guild_id

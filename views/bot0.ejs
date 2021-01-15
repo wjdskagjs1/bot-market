@@ -51,7 +51,7 @@
             <div class="uk-section-small">
                 <div class="uk-container uk-container-large">
                     <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
-                        <a target="_blank" rel="noopener noreferrer" href="https://discord.com/api/oauth2/authorize?client_id=796198778590986290&permissions=10242&scope=bot">봇 초대하기</a>
+                        <a target="_blank" rel="noopener noreferrer" href="<%= invite_uri %>">봇 초대하기</a>
                     </div>
                     <br/>
                     <div id="form" class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
@@ -81,7 +81,7 @@
 		<script src="/js/status.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://cdn.bootpay.co.kr/js/bootpay-3.3.1.min.js" type="application/javascript"></script>
-        <script src="/js/dashboard.js"></script>
+        <script src="/js/bot/<%= bot_id %>.js"></script>
     </body>
 </html>
 

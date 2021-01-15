@@ -4,7 +4,7 @@ const {
     mongouri,
     rest_application_ID,
     bootpay_private_key
- } = process.env; //require('../config.json');
+ } = process.env; // require('../config.json');
 const RestClient = require('@bootpay/server-rest-client').RestClient;
 RestClient.setConfig(
     rest_application_ID,
@@ -171,7 +171,7 @@ router.post('/trial/enroll', (req, res, next) => {
     const start_date = new Date();
     const end_date = start_date.addDays(30);
 
-    User.findOne({guild_id: guild_id}, (err, data)=>{
+    User.findOne({bot_id: bot_id, userid: userid, guild_id: guild_id}, (err, data)=>{
         if(err){
             console.log(err);
         }else{
